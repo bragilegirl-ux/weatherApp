@@ -1,36 +1,46 @@
 function search(event) {
   event.preventDefault();
+
   let searchInputElement = document.querySelector("#search-input");
   let city = searchInputElement.value;
 
-  let cityElement = document.querySelector("#current-city");
-  cityElement.innerHTML = city;
-
-  let apiKey = "2ao1da5ab13686440tfd9513dff43f39";
-  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
-
-  axios.get(apiUrl).then(displayWeather);
-} 
-function displayWeather(response) {
-  let temperature = Math.round(response.data.main.temp);
-  let temperatureElement = document.querySelector("#current-temperature");
-  temperatureElement.innerHTML = `${temperature}°C`;
-
-  let description = response.data.weather[0].description;
-  let descriptionElement = document.querySelector("#weather-description");
-  descriptionElement.innerHTML = description;
-
-  let windSpeed = Math.round(response.data.wind.speed);
-  let windElement = document.querySelector("#wind-speed");
-  windElement.innerHTML = `Wind: ${windSpeed} m/s`;
-
-  let iconCode = response.data.weather[0].icon;
-  let iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-  let iconElement = document.querySelector("#weather-icon");
-  iconElement.setAttribute("src", iconUrl);
-  iconElement.setAttribute("alt", description);
+  getWeather(city);
 }
 
+function getWeather(city) {
+  const apiKey = "YOUR_API_KEY";
+  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+  fetch(apiUrl)
+    .then((response) => response.json())
+    .then((data) => {
+      displayWeather(data);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
+}
+
+function displayWeather(data) {
+  // City
+  document.querySelector("#current-city").innerHTML = data.name;
+
+  // Temperature
+  document.querySelector("#temperature").innerHTML = Math.round(data.main.temp);
+
+  // Wind speed
+  document.querySelector("#wind").innerHTML = `Wind: ${data.wind.speed} m/s`;
+
+  // Description
+  document.querySelector("#description").innerHTML =
+    data.weather[0].description;
+
+  // Weather icon
+  const iconCode = data.weather[0].icon;
+  const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+
+  document.querySelector("#icon").setAttribute("src", iconUrl);
+}
 
 function formatDate(date) {
   let minutes = date.getMinutes();
@@ -55,15 +65,18 @@ function formatDate(date) {
     "Saturday",
   ];
 
-  let formattedDay = days[day];
-  return `${formattedDay} ${hours}:${minutes}`;
+  return `${days[day]} ${hours}:${minutes}`;
 }
 
+// Form submit
 let searchForm = document.querySelector("#search-form");
 searchForm.addEventListener("submit", search);
 
-let currentDateELement = document.querySelector("#current-date");
+// Current date
+let currentDateElement = document.querySelector("#current-date");
 let currentDate = new Date();
 
-currentDateELement.innerHTML = formatDate(currentDate);
+currentDateElement.innerHTML = formatDate(currentDate);
 
+// Default city
+getWeather("London");
