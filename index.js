@@ -8,7 +8,7 @@ function search(event) {
 }
 
 function getWeather(city) {
-  const apiKey = "YOUR_API_KEY";
+  const apiKey = "1081ee1877082d205cc9e2cd985c72af";
   const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
   fetch(apiUrl)
@@ -22,20 +22,20 @@ function getWeather(city) {
 }
 
 function displayWeather(data) {
-  // City
+  
   document.querySelector("#current-city").innerHTML = data.name;
 
-  // Temperature
+  
   document.querySelector("#temperature").innerHTML = Math.round(data.main.temp);
 
-  // Wind speed
+  
   document.querySelector("#wind").innerHTML = `Wind: ${data.wind.speed} m/s`;
 
-  // Description
+  
   document.querySelector("#description").innerHTML =
     data.weather[0].description;
 
-  // Weather icon
+
   const iconCode = data.weather[0].icon;
   const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 
@@ -68,15 +68,15 @@ function formatDate(date) {
   return `${days[day]} ${hours}:${minutes}`;
 }
 
-// Form submit
+
 let searchForm = document.querySelector("#search-form");
 searchForm.addEventListener("submit", search);
 
-// Current date
+
 let currentDateElement = document.querySelector("#current-date");
 let currentDate = new Date();
 
 currentDateElement.innerHTML = formatDate(currentDate);
 
-// Default city
+
 getWeather("London");
